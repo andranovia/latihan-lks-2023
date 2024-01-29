@@ -1,6 +1,11 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import { SaveProvider } from "@/components/contexts/SaveContext";
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <SaveProvider>
+      <Component {...pageProps} />
+    </SaveProvider>
+  );
 }

@@ -1,7 +1,9 @@
-import DataHooks from "@/hooks/DataHooks";
+import DataHooks from "@/components/hooks/DataHooks";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { H1 } from "./Typography";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 interface Data {
   id_society: number;
@@ -24,9 +26,22 @@ const Card = ({ data }: CardProps) => {
   const [editedData, setEditedData] = useState(data);
   const { DeleteData, EditData } = DataHooks();
 
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: any) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   return (
     <>
-      <div className="w-[20rem]  rounded-md shadow-shadow-card p-4">
+      <div className="w-[20rem] rounded-md shadow-shadow-card p-4">
         <div className="text-gray-700 flex justify-between gap-2">
           <div className="flex justify-center gap-2 items-center">
             <span className="mr-4 font-bold ">{data.id_society}</span>
@@ -74,6 +89,20 @@ const Card = ({ data }: CardProps) => {
                 />
               </button>
               <div className="flex flex-col m-2 mt-4 gap-2 font-bold text-md text-gray-800 ">
+                <Link
+                  href={
+                    pathname +
+                    "society/" +
+                    "info" +
+                    "?" +
+                    createQueryString("id", data.id_society)
+                  }
+                >
+                  <button className="bg-black px-6 h-10  my-4 rounded-md">
+                    <p className=" text-start text-white">See More</p>
+                  </button>
+                </Link>
+
                 <button
                   onClick={() => {
                     DeleteData(data.id_society);
@@ -97,13 +126,14 @@ const Card = ({ data }: CardProps) => {
         <>
           <div className="fixed z-30 top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-10 rounded-lg">
+         
               <div className="my-4">{H1("Name")}</div>
               <div className="flex justify-center flex-col">
                 <input
                   type="text"
                   value={editedData.name}
                   onChange={(e) =>
-                    setEditedData({ ...editedData, name: e.target.value })
+                    setEditedData({ ...editedData, name: e.target.value})
                   }
                   className="text-black p-2"
                 />
@@ -112,7 +142,7 @@ const Card = ({ data }: CardProps) => {
                   type="text"
                   value={editedData.gender}
                   onChange={(e) =>
-                    setEditedData({ ...editedData, name: e.target.value })
+                    setEditedData({ ...editedData, gender: e.target.value })
                   }
                   className="text-black p-2"
                 />
@@ -121,7 +151,7 @@ const Card = ({ data }: CardProps) => {
                   type="text"
                   value={editedData.address}
                   onChange={(e) =>
-                    setEditedData({ ...editedData, name: e.target.value })
+                    setEditedData({ ...editedData, address: e.target.value })
                   }
                   className="text-black p-2"
                 />
@@ -135,7 +165,7 @@ const Card = ({ data }: CardProps) => {
                 </button>
                 <button
                   className="bg-black p-2 rounded-md"
-                  onClick={() => EditData({ editedData: data })}
+                  onClick={() => EditData({ editedData })}
                 >
                   <p className="text-white">send</p>
                 </button>

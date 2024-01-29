@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import axiosInstance from "@/tools/axiosIntance";
-import { isEqual } from 'lodash';
+import { useSave } from "@/components/contexts/SaveContext";
 
 interface dataItem {
   id_society: number;
@@ -11,6 +11,10 @@ interface dataItem {
   address: string;
   born_date: string;
   regional_id: number;
+}
+
+interface data {
+  data: dataItem[];
 }
 
 interface inputDataItem {
@@ -31,37 +35,37 @@ interface EditDataProps {
   editedData: dataItem;
 }
 
+
 const DataHooks = () => {
   const [data, setData] = useState<dataItem[]>([]);
+  
+
+  const { setIsChangesSaved } = useSave();
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get("api/v1/society");
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("api/v1/society");
-        const newData = response.data.data;
-
-        if (!isEqual(newData, data)) {
-          setData(newData);
-        }
-      } catch (err) {
-        console.error("Error fetching items:", err);
-      }
-    };
-  
-    fetchData();
-  }, [data]);
+    fetchData().then(setData);
+  }, []);
 
   const AddData = ({ sendInputData }: InputDataProps) => {
     axiosInstance
       .post(`api/v1/society`, sendInputData)
-      .then((res) => console.log(res))
+      .then(() => setIsChangesSaved(true))
       .catch((err) => console.log(err));
   };
 
   const DeleteData = useCallback((id: number) => {
     axiosInstance
       .delete(`api/v1/society/${id}`)
-      .then((res) => console.log(res))
+      .then(() => setIsChangesSaved(true))
       .catch((e) => console.log("error deleting data", e));
   }, []);
 
@@ -85,7 +89,7 @@ const DataHooks = () => {
         address: editedData.address,
         regional_id: editedData.regional_id,
       })
-      .then((res) => console.log(res))
+      .then(() => setIsChangesSaved(true))
       .catch((err) => console.log("Error updating data", err));
   }, []);
 
