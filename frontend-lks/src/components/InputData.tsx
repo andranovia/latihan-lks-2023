@@ -47,10 +47,6 @@ function InputData() {
       value: "name" as keyof inputDataProps,
     },
     {
-      name: "Gender",
-      value: "gender" as keyof inputDataProps,
-    },
-    {
       name: "Password",
       value: "password" as keyof inputDataProps,
     },
@@ -113,6 +109,45 @@ function InputData() {
                       />
                     </React.Fragment>
                   ))}
+                {isLastPage && (
+                  <>
+                    <div className="mb-8">{H1("Gender")}</div>
+                    <div className="flex justify-center items-center mb-4 gap-10">
+                      <div className="flex justify-center items-center">
+                        <input
+                          id="default-radio-1"
+                          type="radio"
+                          value=""
+                          name="default-radio"
+                          className="w-4 h-4 bg-gray-100 border-gray-300  "
+                        />
+                        <label
+                          form="default-radio-1"
+                          className="ms-2 text-sm font-medium text-gray-700 "
+                        >
+                          Male
+                        </label>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <input
+                          checked
+                          id="default-radio-2"
+                          type="radio"
+                          value=""
+                          name="default-radio"
+                          className="w-4 h-4 bg-gray-100 border-gray-300  "
+                        />
+                        <label
+                          form="default-radio-2"
+                          className="ms-2 text-sm font-medium text-gray-700 "
+                        >
+                          Female
+                        </label>
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <div className="flex justify-center gap-10">
                   <button
                     className="bg-black px-6 h-10 rounded-md my-4"

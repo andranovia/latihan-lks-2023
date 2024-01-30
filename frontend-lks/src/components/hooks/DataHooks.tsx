@@ -13,9 +13,6 @@ interface dataItem {
   regional_id: number;
 }
 
-interface data {
-  data: dataItem[];
-}
 
 interface inputDataItem {
   id_card_number: number;
@@ -31,16 +28,15 @@ interface InputDataProps {
   sendInputData: inputDataItem;
 }
 
-interface EditDataProps {
-  editedData: dataItem;
-}
 
 
 const DataHooks = () => {
   const [data, setData] = useState<dataItem[]>([]);
-  
 
   const { setIsChangesSaved } = useSave();
+
+
+ 
 
   const fetchData = useCallback(async () => {
     try {
@@ -51,6 +47,7 @@ const DataHooks = () => {
     }
   }, []);
 
+  
   useEffect(() => {
     fetchData().then(setData);
   }, []);
@@ -62,41 +59,11 @@ const DataHooks = () => {
       .catch((err) => console.log(err));
   };
 
-  const DeleteData = useCallback((id: number) => {
-    axiosInstance
-      .delete(`api/v1/society/${id}`)
-      .then(() => setIsChangesSaved(true))
-      .catch((e) => console.log("error deleting data", e));
-  }, []);
+ 
 
-  const EditData = useCallback(({ editedData }: EditDataProps) => {
-    let genderValue;
-    if (editedData.gender === "laki-laki") {
-      genderValue = "male";
-    } else if (editedData.gender === "perempuan") {
-      genderValue = "female";
-    } else {
-      genderValue = "unknown";
-    }
-
-    axiosInstance
-      .put(`api/v1/society/${editedData.id_society}`, {
-        id_card_number: editedData.id_card_number,
-        password: editedData.password,
-        name: editedData.name,
-        born_date: editedData.born_date,
-        gender: genderValue,
-        address: editedData.address,
-        regional_id: editedData.regional_id,
-      })
-      .then(() => setIsChangesSaved(true))
-      .catch((err) => console.log("Error updating data", err));
-  }, []);
 
   return {
     data,
-    DeleteData,
-    EditData,
     AddData,
   };
 };

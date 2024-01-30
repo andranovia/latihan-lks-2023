@@ -4,6 +4,9 @@ import React, { useCallback, useState } from "react";
 import { H1 } from "./Typography";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import axiosInstance from "@/tools/axiosIntance";
+import { useSave } from "./contexts/SaveContext";
+import EditingData from "./EditingData";
 
 interface Data {
   id_society: number;
@@ -20,11 +23,10 @@ interface CardProps {
   data: Data;
 }
 
-const Card = ({ data }: CardProps) => {
+const Card = React.memo(({ data }: CardProps) => {
   const [showMore, setShowMore] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(data);
-  const { DeleteData, EditData } = DataHooks();
+  const { setIsChangesSaved } = useSave();
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -39,9 +41,16 @@ const Card = ({ data }: CardProps) => {
     [searchParams]
   );
 
+  const DeleteData = useCallback((id: number) => {
+    axiosInstance
+      .delete(`api/v1/society/${id}`)
+      .then(() => setIsChangesSaved(true))
+      .catch((e) => console.log("error deleting data", e));
+  }, []);
+
   return (
     <>
-      <div className="w-[20rem] rounded-md shadow-shadow-card p-4">
+      <div className="w-[20rem] rounded-md shadow-shadow-card p-4 ">
         <div className="text-gray-700 flex justify-between gap-2">
           <div className="flex justify-center gap-2 items-center">
             <span className="mr-4 font-bold ">{data.id_society}</span>
@@ -124,58 +133,11 @@ const Card = ({ data }: CardProps) => {
       )}
       {isEditing && (
         <>
-          <div className="fixed z-30 top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-10 rounded-lg">
-         
-              <div className="my-4">{H1("Name")}</div>
-              <div className="flex justify-center flex-col">
-                <input
-                  type="text"
-                  value={editedData.name}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, name: e.target.value})
-                  }
-                  className="text-black p-2"
-                />
-                <div className="my-4">{H1("Gender")}</div>
-                <input
-                  type="text"
-                  value={editedData.gender}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, gender: e.target.value })
-                  }
-                  className="text-black p-2"
-                />
-                <div className="my-4">{H1("address")}</div>
-                <input
-                  type="text"
-                  value={editedData.address}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, address: e.target.value })
-                  }
-                  className="text-black p-2"
-                />
-              </div>
-              <div className="flex justify-start gap-4 mt-10">
-                <button
-                  className="bg-black p-2 rounded-md"
-                  onClick={() => setIsEditing(false)}
-                >
-                  <p className="text-white">close</p>
-                </button>
-                <button
-                  className="bg-black p-2 rounded-md"
-                  onClick={() => EditData({ editedData })}
-                >
-                  <p className="text-white">send</p>
-                </button>
-              </div>
-            </div>
-          </div>
+         <EditingData item={data} setIsEditing={setIsEditing}/>
         </>
       )}
     </>
   );
-};
+});
 
 export default Card;
