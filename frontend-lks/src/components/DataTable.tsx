@@ -12,7 +12,7 @@ const DataTable = () => {
   return (
     <>
     <div className="overflow-x-hidden">
-      <div className="flex flex-col sm:grid grid-cols-4 mx-20  gap-4 mt-10">
+      <div className="flex flex-col sm:grid grid-cols-4 sm:mx-20  gap-4 mt-10">
         {data ? (
           data.map((item, index) => (
             <div key={index} className="flex justify-center items-center ">
