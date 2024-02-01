@@ -11,14 +11,17 @@ interface ValidationErrors {
 }
 
 interface User {
-  username: string;
+  name: string;
+  password: number;
+  born_date: string;
+  regional_id: number;
+
 
 }
 
 export const useAuth = () => {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [idCard, setidCard] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
@@ -26,6 +29,7 @@ export const useAuth = () => {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -51,40 +55,12 @@ export const useAuth = () => {
     fetchUser();
   }, []);
 
-  const registerAction = React.useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-      let payload = {
-        username: name,
-        password: password,
-        confirm_password: confirmPassword,
-      };
-      axiosInstance
-        .post("/api/v1/auth/register", payload)
-        .then((r) => {
-          setIsSubmitting(false);
-          localStorage.setItem("token", r.data.token);
-          setValidationErrors(r.data.errors);
-          console.log(r);
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ username: r.data.username})
-          );
-        })
-        .catch(() => {
-          setIsSubmitting(false);
-        });
-    },
-    [name, email, password, confirmPassword]
-  );
-
   const loginAction = React.useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       setIsSubmitting(true);
       let payload = {
-        username: name,
+        id_card_number: idCard,
         password: password,
       };
 
@@ -93,8 +69,8 @@ export const useAuth = () => {
         .then(({ data }) => {
           setValidationErrors(data.errors);
           setIsSubmitting(false);
+          console.log(data)
           const accessToken = data.data.token;
-          console.log(accessToken)
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem(
             "user",
@@ -115,7 +91,7 @@ export const useAuth = () => {
           }
         });
     },
-    [email, password]
+    [idCard, password]
   );
 
   const logoutAction = React.useCallback(() => {
@@ -148,14 +124,11 @@ export const useAuth = () => {
 
   return React.useMemo(
     () => ({
-      registerAction,
       loginAction,
       logoutAction,
       user,
-      name,
-      setName,
-      email,
-      setEmail,
+      idCard,
+      setidCard,
       password,
       setPassword,
       confirmPassword,
@@ -164,14 +137,11 @@ export const useAuth = () => {
       validationErrors,
     }),
     [
-      registerAction,
       loginAction,
       logoutAction,
       user,
-      name,
-      setName,
-      email,
-      setEmail,
+      idCard,
+      setidCard,
       password,
       setPassword,
       confirmPassword,

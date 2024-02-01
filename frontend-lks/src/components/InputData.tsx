@@ -87,7 +87,7 @@ function InputData() {
     setCurrentIndex(0)
   };
   return (
-    <div className="flex mt-10 justify-between items-center mx-10 ">
+    <div className="flex sm:mt-10 justify-between items-center mx-10 ">
       <div className="my-4">{H1("Add More Data")}</div>
       <button
         className="bg-black px-6 h-10 rounded-md"

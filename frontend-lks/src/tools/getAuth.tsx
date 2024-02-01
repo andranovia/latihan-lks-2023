@@ -14,8 +14,8 @@ export const getUser = async (accessToken: string | null) => {
       withCredentials: true,
 
     });
-    
-    return response.data;
+    console.log(response.data.data)
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching user:', error);
     throw error;

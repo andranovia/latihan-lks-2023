@@ -9,8 +9,8 @@ function Login() {
   const {
     loginAction,
     validationErrors,
-    name,
-    setName,
+    idCard,
+    setidCard,
     password,
     setPassword,
     isSubmitting,
@@ -31,16 +31,16 @@ function Login() {
 
           <div className="mb-3">
             <AuthLabel htmlFor="name" className="form-label">
-              Username
+              Id Card Number
             </AuthLabel>
             <AuthInput
-              type="name"
+              type="Number"
               className="form-control"
-              id="name"
-              name="name"
-              value={name}
+              id="idCard"
+              name="idCard"
+              value={idCard}
               onChange={(e: any) => {
-                setName(e.target.value);
+                setidCard(e.target.value);
               }}
             />
           </div>
