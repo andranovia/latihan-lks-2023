@@ -1,7 +1,6 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { H1 } from "./Typography";
 import DataHooks from "@/components/hooks/DataHooks";
-import { useSave } from "@/components/contexts/SaveContext";
 import Image from "next/image";
 import RegionalHooks from "./hooks/RegionalsHooks";
 
@@ -30,6 +29,8 @@ function InputData() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { AddData } = DataHooks();
   const { regionalData } = RegionalHooks();
+
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -71,6 +72,20 @@ function InputData() {
   const isLastPage = currentIndex === 4;
   const isFirstPage = currentIndex === 0;
 
+  const handleSend = () => {
+    AddData({ sendInputData: inputData });
+    setAddModal(false);
+    setInputData({
+      id_card_number: 0,
+      name: "",
+      gender: "",
+      password: "",
+      address: "",
+      born_date: "",
+      regional_id: 0,
+    })
+    setCurrentIndex(0)
+  };
   return (
     <div className="flex mt-10 justify-between items-center mx-10 ">
       <div className="my-4">{H1("Add More Data")}</div>
@@ -110,8 +125,8 @@ function InputData() {
                     </React.Fragment>
                   ))}
                 {isLastPage && (
-                  <>       
-                  <div className="">{H1("Regional")}</div>
+                  <>
+                    <div className="">{H1("Regional")}</div>
                     <select
                       id="countries"
                       value={inputData.regional_id}
@@ -209,7 +224,7 @@ function InputData() {
                     <>
                       <button
                         className="bg-black px-6 h-10 rounded-md my-4"
-                        onClick={() => AddData({ sendInputData: inputData })}
+                        onClick={() => handleSend()}
                       >
                         <p className="text-white">Send</p>
                       </button>

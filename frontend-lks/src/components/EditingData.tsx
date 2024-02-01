@@ -2,6 +2,7 @@ import { H1 } from "@/components/Typography";
 import axiosInstance from "@/tools/axiosIntance";
 import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { useSave } from "./contexts/SaveContext";
+import RegionalHooks from "./hooks/RegionalsHooks";
 
 interface dataItem {
   id_society: number;
@@ -26,6 +27,7 @@ interface EditDataProps {
 const EditingData = ({ item, setIsEditing }: EditProps) => {
   const [editedData, setEditedData] = useState({ ...item });
   const { setIsChangesSaved } = useSave();
+  const { regionalData } = RegionalHooks();
 
   const EditData = ({ editedData }: EditDataProps) => {
     let genderValue;
@@ -56,6 +58,15 @@ const EditingData = ({ item, setIsEditing }: EditProps) => {
     setIsEditing(false);
     EditData({ editedData });
   };
+
+  const handleRegionChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedRegionId = parseInt(e.target.value, 10);
+    setEditedData((prevData: any) => ({
+      ...prevData,
+      regional_id: selectedRegionId,
+    }));
+  };
+
   return (
     <>
       <div className="fixed z-30 top-0 left-0 w-screen h-screen  bg-opacity-50 flex justify-center items-center">
@@ -118,7 +129,22 @@ const EditingData = ({ item, setIsEditing }: EditProps) => {
                 </label>
               </div>
             </div>
-            <div className="relative max-w-sm mt-10">
+            <div className="my-4">{H1("Regional")}</div>
+            <select
+              id="countries"
+              value={editedData.regional_id}
+              onChange={handleRegionChange}
+              className="my-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            >
+              <option value={0}>{editedData.regional_id}</option>
+              {regionalData.data.map((region) => (
+                <option key={region.id} value={region.id}>
+                  {region.province} - {region.district}
+                </option>
+              ))}
+            </select>
+            <div className="my-4">{H1("Born Date")}</div>
+            <div className="relative max-w-sm ">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -130,16 +156,22 @@ const EditingData = ({ item, setIsEditing }: EditProps) => {
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
+
               <input
                 type="date"
                 className="bg-gray-50 border border-gray-300 rounded-md text-gray-900 text-sm rounded-lgblock w-full ps-10 p-2.5  0"
                 placeholder="Select date"
                 value={editedData["born_date"]}
-                onChange={(e) => setEditedData(e)}
+                onChange={(e) =>
+                  setEditedData({
+                    ...editedData,
+                    born_date: e.target.value,
+                  })
+                }
                 name="born_date"
               />
             </div>
-            <div className="my-4">{H1("address")}</div>
+            <div className="my-4">{H1("Address")}</div>
             <input
               type="text"
               value={editedData.address}

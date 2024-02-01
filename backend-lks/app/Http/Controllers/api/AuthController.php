@@ -70,6 +70,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $user->currentAccessToken()->delete();
+        
         $response = [
             'success'   => true,
             'message'   => 'Berhasil Logout'
